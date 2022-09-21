@@ -212,6 +212,9 @@ bool IRac::isProtocolSupported(const decode_type_t protocol) {
 #if SEND_GREE
     case decode_type_t::GREE:
 #endif
+#if SEND_ELUX
+    case decode_type_t::ELUX:
+#endif
 #if SEND_HAIER_AC
     case decode_type_t::HAIER_AC:
 #endif
@@ -319,7 +322,9 @@ bool IRac::isProtocolSupported(const decode_type_t protocol) {
 #if SEND_VOLTAS
     case decode_type_t::VOLTAS:
 #endif
+#if SEND_WHIRLPOOL_AC
     case decode_type_t::WHIRLPOOL_AC:
+#endif
       return true;
     default:
       return false;
@@ -1073,6 +1078,47 @@ void IRac::gree(IRGreeAC *ac, const gree_ac_remote_model_t model,
   ac->send();
 }
 #endif  // SEND_GREE
+
+#if SEND_ELUX
+/// Send a Elux A/C message with the supplied settings.
+/// @param[in, out] ac A Ptr to an IRGreeAC object to use.
+/// @param[in] model The A/C model to use.
+/// @param[in] on The power setting.
+/// @param[in] mode The operation mode setting.
+/// @param[in] celsius Temperature units. True is Celsius, False is Fahrenheit.
+/// @param[in] degrees The temperature setting in degrees.
+/// @param[in] fan The speed setting for the fan.
+/// @param[in] swingv The vertical swing setting.
+/// @param[in] turbo Run the device in turbo/powerful mode.
+/// @param[in] light Turn on the LED/Display mode.
+/// @param[in] clean Turn on the self-cleaning mode. e.g. Mould, dry filters etc
+/// @param[in] sleep Nr. of minutes for sleep mode. -1 is Off, >= 0 is on.
+void IRac::elux(IREluxAC *ac, const elux_ac_remote_model_t model,
+                const bool on, const stdAc::opmode_t mode, const bool celsius,
+                const float degrees, const stdAc::fanspeed_t fan,
+                const stdAc::swingv_t swingv, const bool turbo,
+                const bool light, const bool clean, const int16_t sleep) {
+  ac->begin();
+  ac->setModel(model);
+  ac->setPower(on);
+  ac->setMode(ac->convertMode(mode));
+  ac->setTemp(degrees, !celsius);
+  ac->setFan(ac->convertFan(fan));
+  ac->setSwingVertical(swingv == stdAc::swingv_t::kAuto,  // Set auto flag.
+                       ac->convertSwingV(swingv));
+  ac->setLight(light);
+  ac->setTurbo(turbo);
+  ac->setXFan(clean);
+  ac->setSleep(sleep >= 0);  // Sleep on this A/C is either on or off.
+  // No Horizontal Swing setting available.
+  // No Econo setting available.
+  // No Filter setting available.
+  // No Beep setting available.
+  // No Quiet setting available.
+  // No Clock setting available.
+  ac->send();
+}
+#endif  // SEND_ELUX
 
 #if SEND_HAIER_AC
 /// Send a Haier A/C message with the supplied settings.

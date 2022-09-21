@@ -768,6 +768,9 @@
 #ifndef D_STR_GREE
 #define D_STR_GREE "GREE"
 #endif  // D_STR_GREE
+#ifndef D_STR_ELUX
+#define D_STR_ELUX "ELUX"
+#endif  // D_STR_ELUX
 #ifndef D_STR_HAIER_AC
 #define D_STR_HAIER_AC "HAIER_AC"
 #endif  // D_STR_HAIER_AC

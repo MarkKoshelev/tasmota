@@ -568,6 +568,11 @@ class IRrecv {
                   const uint16_t nbits = kGreeBits,
                   const bool strict = true);
 #endif
+#if DECODE_ELUX
+  bool decodeElux(decode_results *results, uint16_t offset = kStartOffset,
+                  const uint16_t nbits = kEluxBits,
+                  const bool strict = true);
+#endif
 #if (DECODE_HAIER_AC | DECODE_HAIER_AC_YRW02)
   bool decodeHaierAC(decode_results *results, uint16_t offset = kStartOffset,
                      const uint16_t nbits = kHaierACBits,

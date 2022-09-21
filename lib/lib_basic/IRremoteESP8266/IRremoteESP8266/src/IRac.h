@@ -20,6 +20,7 @@
 #include "ir_Electra.h"
 #include "ir_Goodweather.h"
 #include "ir_Gree.h"
+#include "ir_Elux.h"
 #include "ir_Haier.h"
 #include "ir_Hitachi.h"
 #include "ir_Kelon.h"
@@ -252,6 +253,13 @@ void electra(IRElectraAc *ac,
             const bool turbo, const bool econo, const bool light,
             const bool clean, const int16_t sleep = -1);
 #endif  // SEND_GREE
+#if SEND_ELUX
+  void elux(IREluxAC *ac, const elux_ac_remote_model_t model,
+            const bool on, const stdAc::opmode_t mode, const bool celsius,
+            const float degrees, const stdAc::fanspeed_t fan,
+            const stdAc::swingv_t swingv, const bool turbo, const bool light,
+            const bool clean, const int16_t sleep = -1);
+#endif  // SEND_ELUX
 #if SEND_HAIER_AC
   void haier(IRHaierAC *ac,
              const bool on, const stdAc::opmode_t mode, const float degrees,

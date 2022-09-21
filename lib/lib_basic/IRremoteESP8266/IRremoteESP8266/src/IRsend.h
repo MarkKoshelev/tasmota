@@ -136,6 +136,12 @@ enum gree_ac_remote_model_t {
   YBOFB,     // (2) Green, YBOFB2, YAPOF3
 };
 
+/// Elux A/C model numbers
+enum elux_ac_remote_model_t {
+  EAW1F = 1,  // (1) Ultimate, EKOKAI, RusClimate (Default)
+  EBOFB,     // (2) Green, YBOFB2, YAPOF3
+};
+
 /// HAIER_AC176 A/C model numbers
 enum haier_ac176_remote_model_t {
   V9014557_A = 1,  // (1) V9014557 Remote in "A" setting. (Default)
@@ -490,6 +496,12 @@ class IRsend {
                 const uint16_t repeat = kGreeDefaultRepeat);
   void sendGree(const uint8_t data[], const uint16_t nbytes = kGreeStateLength,
                 const uint16_t repeat = kGreeDefaultRepeat);
+#endif
+#if SEND_ELUX
+  void sendElux(const uint64_t data, const uint16_t nbits = kEluxBits,
+                const uint16_t repeat = kEluxDefaultRepeat);
+  void sendElux(const uint8_t data[], const uint16_t nbytes = kEluxStateLength,
+                const uint16_t repeat = kEluxDefaultRepeat);
 #endif
 #if SEND_GOODWEATHER
   void sendGoodweather(const uint64_t data,
