@@ -493,12 +493,13 @@ typedef struct {
   uint16_t      domoticz_update_timer;     // 340
   uint16_t      pwm_range;                 // 342
 
-#if MAX_DOMOTICZ_IDX == 4 // by default
-  uint32_t      domoticz_relay_idx[MAX_DOMOTICZ_IDX];  // 344
-  uint32_t      domoticz_key_idx[MAX_DOMOTICZ_IDX];    // 354
-#else // MAX_DOMOTICZ_IDX == 8
+
+#if MAX_DOMOTICZ_RELAYS == 8 // may be 4 or 8
   uint16_t      domoticz_relay_idx[MAX_DOMOTICZ_IDX];  // 344
   uint16_t      domoticz_key_idx[MAX_DOMOTICZ_IDX];    // 354
+#else // default value
+  uint32_t      domoticz_relay_idx[MAX_DOMOTICZ_IDX];  // 344
+  uint32_t      domoticz_key_idx[MAX_DOMOTICZ_IDX];    // 354
 #endif
  
   uint32_t      energy_power_calibration;    // 364
@@ -563,7 +564,7 @@ typedef struct {
   char          serial_delimiter;          // 451
   uint8_t       seriallog_level;           // 452
   uint8_t       sleep;                     // 453
-  uint16_t      domoticz_switch_idx[MAX_DOMOTICZ_IDX];      // 454
+  uint16_t      domoticz_switch_idx[MAX_DOMOTICZ_SW_IDX];    // 454
   uint16_t      domoticz_sensor_idx[MAX_DOMOTICZ_SNS_IDX];  // 45C
   uint8_t       module;                    // 474
   uint8_t       ws_color[4][3];            // 475
