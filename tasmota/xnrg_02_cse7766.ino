@@ -203,7 +203,7 @@ void CseEverySecond(void) {
         uint32_t delta = (cf_pulses * Settings->energy_power_calibration) / 36;
         // prevent invalid load delta steps even checksum is valid (issue #5789):
         // prevent invalid load delta steps even checksum is valid but allow up to 4kW (issue #7155):
-        if (delta <= (4000 * 1000 / 36)) {  // max load for S31/Pow R2: 4.00kW
+        if (delta <= (5000 * 1000 / 36)) {  // max load for S31/Pow R2: 4.00kW
           Cse.cf_pulses_last_time = Cse.cf_pulses;
           Energy.kWhtoday_delta[0] += delta;
         }
