@@ -37,12 +37,12 @@ SONOFF_BASIC, SONOFF_RF, SONOFF_SV, SONOFF_TH, SONOFF_DUAL, SONOFF_POW, SONOFF_4
   MAXMODULE
 */
 
-//#define MY_USE_SONOFF_DUAL_R2         // used for heating water pipe temp sensors simple(CT) power managemet
+//#define MY_USE_SONOFF_DUAL_R2        // used for heating water pipe temp sensors simple(CT) power managemet
 
 
-//#define MY_USE_PID                  // used for 3way valve (water controller)
+//#define MY_USE_PID                   // used for 3way valve (water controller)
 
-//#define MY_USE_RELAY_SONOFF_TH      // used for any relays based on SONOFF_TH (DIN rail relays, Sonoff TH16 ets)
+//#define MY_USE_RELAY_SONOFF_TH       // used for any relays based on SONOFF_TH (DIN rail relays, Sonoff TH16 ets)
 
 //#define MY_USE_RELAY_SONOFF_GENERIC  // used for ESP-01 module with Relay (pin0) DS18B20 (pin2) https://templates.blakadder.com/ESP-01S-Relay-v4.html 
 
@@ -78,7 +78,7 @@ GPIO14 HLWBL CF1
 GPIO16 Led
 */
 
-#define MY_USE_POW_R2 SONOFF_POW_R2 // used for any relays based on CSE7759 and CSE7766 - Energy (Sonoff S31 and Sonoff Pow R2)
+//#define MY_USE_POW_R2 // used for any relays based on CSE7759 and CSE7766 - Energy (Sonoff S31 and Sonoff Pow R2)
 /* непонятное реагирование на кнопки, реле работает от led1, поэтому место подключения не имеет значения, подключи к GPIO2 
 GPIO12	Led2
 GPIO13	Led1
@@ -91,7 +91,18 @@ GPIO3   CSE7766 RX
 SetOption21 1 - всегда показывать напряжение
 */
 
+#define MY_USE_MODBUS
+
 #undef MODULE
+
+#ifdef  MY_USE_MODBUS
+// GPIO1 as ModBR Tx and GPIO3 as ModBR Rx
+#define MODULE WEMOS
+#define MAX_DOMOTICZ_TEMPS 2
+#define USE_MODBUS_BRIDGE
+#endif
+
+
 
 #ifdef  MY_USE_POW_R2
 #define MODULE SONOFF_POW_R2
@@ -147,9 +158,9 @@ SetOption21 1 - всегда показывать напряжение
 #define WIFI_DNS               "0.0.0.0"     // [IpAddress4] If not using DHCP set DNS IP address (might be equal to WIFI_GATEWAY)
 
 #undef  STA_SSID1
-#define STA_SSID1              "IoT-Repeater"
+//#define STA_SSID1              "IoT-Repeater"
 //#define STA_SSID1              "IoT-MM"              // [Ssid1] Wifi SSID
-//#define STA_SSID1              "IoT-01"              // [Ssid1] Wifi SSID
+#define STA_SSID1              "IoT-01"              // [Ssid1] Wifi SSID
 //#define STA_SSID1              "IoT-02"              // [Ssid1] Wifi SSID
 //#define STA_SSID1              "Elvis"              // [Ssid1] Wifi SSID
 #undef  STA_PASS1
