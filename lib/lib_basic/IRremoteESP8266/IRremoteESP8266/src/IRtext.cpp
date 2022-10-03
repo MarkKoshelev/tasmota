@@ -307,6 +307,7 @@ IRTEXT_CONST_BLOB_DECL(kAllProtocolNamesStr) {
     D_STR_SANYO_LC7461 "\x0"
     D_STR_RC5X "\x0"
     D_STR_GREE "\x0"
+	D_STR_ELUX "\x0"
     D_STR_PRONTO "\x0"
     D_STR_NEC_LIKE "\x0"
     D_STR_ARGO "\x0"

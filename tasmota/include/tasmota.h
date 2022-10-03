@@ -81,7 +81,12 @@ const uint8_t MAX_PWMS_LEGACY = 5;          // Max number of PWM channels in fir
 const uint8_t MAX_COUNTERS = 4;             // Max number of counter sensors
 const uint8_t MAX_TIMERS = 16;              // Max number of Timers
 const uint8_t MAX_PULSETIMERS = 32;         // Max number of supported pulse timers
-const uint8_t MAX_DOMOTICZ_IDX = 4;         // Max number of Domoticz device, key and switch indices
+#ifdef MAX_DOMOTICZ_RELAYS 
+const uint8_t MAX_DOMOTICZ_IDX = MAX_DOMOTICZ_RELAYS;   // Max number of Domoticz key (relay) indices
+#else
+const uint8_t MAX_DOMOTICZ_IDX = 4;         // Max number of Domoticz device, key (relay) indices
+#endif
+const uint8_t MAX_DOMOTICZ_SW_IDX = 4;      // Max number of Domoticz switch indices
 const uint8_t MAX_DOMOTICZ_SNS_IDX = 12;    // Max number of Domoticz sensors indices
 const uint8_t MAX_KNX_GA = 10;              // Max number of KNX Group Addresses to read that can be set
 const uint8_t MAX_KNX_CB = 10;              // Max number of KNX Group Addresses to write that can be set
@@ -361,7 +366,7 @@ enum SO32_49Index { P_HOLD_TIME,              // SetOption32 - (Button/Switch) K
                     P_SO49_FREE               // SetOption49
                   };  // Max is PARAM8_SIZE (18) - SetOption32 until SetOption49
 
-enum DomoticzSensors {DZ_TEMP, DZ_TEMP_HUM, DZ_TEMP_HUM_BARO, DZ_POWER_ENERGY, DZ_ILLUMINANCE, DZ_COUNT, DZ_VOLTAGE, DZ_CURRENT,
+enum DomoticzSensors {DZ_TEMP, DZ_TEMP2, DZ_TEMP_HUM, DZ_TEMP_HUM_BARO, DZ_POWER_ENERGY, DZ_ILLUMINANCE, DZ_COUNT, DZ_VOLTAGE, DZ_CURRENT,
                       DZ_AIRQUALITY, DZ_P1_SMART_METER, DZ_SHUTTER, DZ_MAX_SENSORS};
 
 enum Ws2812ClockIndex { WS_SECOND, WS_MINUTE, WS_HOUR, WS_MARKER };

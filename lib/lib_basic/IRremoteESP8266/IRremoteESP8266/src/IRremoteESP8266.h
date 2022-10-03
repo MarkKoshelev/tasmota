@@ -364,6 +364,13 @@
 #define SEND_GREE              _IR_ENABLE_DEFAULT_
 #endif  // SEND_GREE
 
+#ifndef DECODE_ELUX
+#define DECODE_ELUX            _IR_ENABLE_DEFAULT_
+#endif  // DECODE_ELUX
+#ifndef SEND_ELUX
+#define SEND_ELUX              _IR_ENABLE_DEFAULT_
+#endif  // SEND_ELUX
+
 #ifndef DECODE_PRONTO
 #define DECODE_PRONTO          false  // Not applicable.
 #endif  // DECODE_PRONTO
@@ -861,7 +868,7 @@
 #define SEND_KELON168       _IR_ENABLE_DEFAULT_
 #endif  // SEND_KELON168
 
-#if (DECODE_ARGO || DECODE_DAIKIN || DECODE_FUJITSU_AC || DECODE_GREE || \
+#if (DECODE_ARGO || DECODE_DAIKIN || DECODE_FUJITSU_AC || DECODE_GREE || DECODE_ELUX || \
      DECODE_KELVINATOR || DECODE_MITSUBISHI_AC || DECODE_TOSHIBA_AC || \
      DECODE_TROTEC || DECODE_HAIER_AC || DECODE_HITACHI_AC || \
      DECODE_HITACHI_AC1 || DECODE_HITACHI_AC2 || DECODE_HAIER_AC_YRW02 || \
@@ -941,6 +948,7 @@ enum decode_type_t {
   SANYO_LC7461,
   RC5X,
   GREE,
+  ELUX,
   PRONTO,  // Technically not a protocol, but an encoding. (25)
   NEC_LIKE,
   ARGO,
@@ -1121,6 +1129,9 @@ const uint16_t kGoodweatherMinRepeat = kNoRepeat;
 const uint16_t kGreeStateLength = 8;
 const uint16_t kGreeBits = kGreeStateLength * 8;
 const uint16_t kGreeDefaultRepeat = kNoRepeat;
+const uint16_t kEluxStateLength = 14;
+const uint16_t kEluxBits = kEluxStateLength * 8;
+const uint16_t kEluxDefaultRepeat = kNoRepeat;
 const uint16_t kHaierACStateLength = 9;
 const uint16_t kHaierACBits = kHaierACStateLength * 8;
 const uint16_t kHaierAcDefaultRepeat = kNoRepeat;
@@ -1306,6 +1317,7 @@ const uint16_t kRhossDefaultRepeat = 0;
 #define FUJITSU_AC_MIN_BITS           kFujitsuAcMinBits
 #define GICABLE_BITS                  kGicableBits
 #define GREE_STATE_LENGTH             kGreeStateLength
+#define ELUX_STATE_LENGTH             kEluxStateLength
 #define HAIER_AC_STATE_LENGTH         kHaierACStateLength
 #define HAIER_AC_YRW02_STATE_LENGTH   kHaierACYRW02StateLength
 #define HITACHI_AC_STATE_LENGTH       kHitachiAcStateLength

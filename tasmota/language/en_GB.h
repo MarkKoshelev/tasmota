@@ -437,6 +437,15 @@
 #define D_DOMOTICZ_SWITCH_IDX "Switch idx"
 #define D_DOMOTICZ_SENSOR_IDX "Sensor idx"
   #define D_DOMOTICZ_TEMP "Temp"
+
+  #define D_DOMOTICZ_TEMP2 "Temp2"
+  #define D_DOMOTICZ_TEMP3 "Temp3"
+  #define D_DOMOTICZ_TEMP4 "Temp4"
+  #define D_DOMOTICZ_TEMP5 "Temp5"
+  #define D_DOMOTICZ_TEMP6 "Temp6"
+  #define D_DOMOTICZ_TEMP7 "Temp7"
+  #define D_DOMOTICZ_TEMP8 "Temp8"
+
   #define D_DOMOTICZ_TEMP_HUM "Temp,Hum"
   #define D_DOMOTICZ_TEMP_HUM_BARO "Temp,Hum,Baro"
   #define D_DOMOTICZ_POWER_ENERGY "Power,Energy"

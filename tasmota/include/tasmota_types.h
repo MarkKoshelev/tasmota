@@ -545,8 +545,16 @@ typedef struct {
   uint8_t       tuyamcu_topic;             // 33F  Manage tuyaSend topic. ex_energy_power_delta on 6.6.0.20, replaced on 8.5.0.1
   uint16_t      domoticz_update_timer;     // 340
   uint16_t      pwm_range;                 // 342
+
+
+#if MAX_DOMOTICZ_RELAYS == 8 // may be 4 or 8
+  uint16_t      domoticz_relay_idx[MAX_DOMOTICZ_IDX];  // 344
+  uint16_t      domoticz_key_idx[MAX_DOMOTICZ_IDX];    // 354
+#else // default value
   uint32_t      domoticz_relay_idx[MAX_DOMOTICZ_IDX];  // 344
   uint32_t      domoticz_key_idx[MAX_DOMOTICZ_IDX];    // 354
+#endif
+ 
   uint32_t      energy_power_calibration;    // 364
   uint32_t      energy_voltage_calibration;  // 368
   uint32_t      energy_current_calibration;  // 36C
@@ -636,7 +644,7 @@ typedef struct {
   char          serial_delimiter;          // 451
   uint8_t       seriallog_level;           // 452
   uint8_t       sleep;                     // 453
-  uint16_t      domoticz_switch_idx[MAX_DOMOTICZ_IDX];      // 454
+  uint16_t      domoticz_switch_idx[MAX_DOMOTICZ_SW_IDX];    // 454
   uint16_t      domoticz_sensor_idx[MAX_DOMOTICZ_SNS_IDX];  // 45C
   uint8_t       module;                    // 474
   uint8_t       ws_color[4][3];            // 475

@@ -704,6 +704,8 @@ uint16_t IRsend::defaultBits(const decode_type_t protocol) {
       return kElectraAcBits;
     case GREE:
       return kGreeBits;
+    case ELUX:
+      return kEluxBits;	  
     case HAIER_AC:
       return kHaierACBits;
     case HAIER_AC_YRW02:
@@ -896,6 +898,11 @@ bool IRsend::send(const decode_type_t type, const uint64_t data,
 #if SEND_GREE
     case GREE:
       sendGree(data, nbits, min_repeat);
+      break;
+#endif
+#if SEND_ELUX
+    case ELUX:
+      sendElux(data, nbits, min_repeat);
       break;
 #endif
 #if SEND_INAX
@@ -1181,6 +1188,11 @@ bool IRsend::send(const decode_type_t type, const uint8_t *state,
       sendGree(state, nbytes);
       break;
 #endif  // SEND_GREE
+#if SEND_ELUX
+    case ELUX:
+      sendElux(state, nbytes);
+      break;
+#endif  // SEND_ELUX
 #if SEND_HAIER_AC
     case HAIER_AC:
       sendHaierAC(state, nbytes);

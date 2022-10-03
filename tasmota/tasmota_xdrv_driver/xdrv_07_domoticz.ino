@@ -43,7 +43,15 @@ const char DOMOTICZ_MESSAGE[] PROGMEM = "{\"idx\":%d,\"nvalue\":%d,\"svalue\":\"
 #endif
 
 const char kDomoticzSensors[] PROGMEM =
-  D_DOMOTICZ_TEMP "|" D_DOMOTICZ_TEMP_HUM "|" D_DOMOTICZ_TEMP_HUM_BARO "|" D_DOMOTICZ_POWER_ENERGY "|" D_DOMOTICZ_ILLUMINANCE "|"
+  D_DOMOTICZ_TEMP "|"
+#if MAX_DOMOTICZ_TEMPS > 1
+  D_DOMOTICZ_TEMP2 "|"
+#elif MAX_DOMOTICZ_TEMPS > 2
+  D_DOMOTICZ_TEMP3 "|" D_DOMOTICZ_TEMP4 "|"
+#elif MAX_DOMOTICZ_TEMPS > 4
+  D_DOMOTICZ_TEMP5 "|" D_DOMOTICZ_TEMP6 "|" D_DOMOTICZ_TEMP7 "|" D_DOMOTICZ_TEMP8 "|"
+#endif  
+  D_DOMOTICZ_TEMP_HUM "|" D_DOMOTICZ_TEMP_HUM_BARO "|" D_DOMOTICZ_POWER_ENERGY "|" D_DOMOTICZ_ILLUMINANCE "|"
   D_DOMOTICZ_COUNT "|" D_DOMOTICZ_VOLTAGE "|" D_DOMOTICZ_CURRENT "|" D_DOMOTICZ_AIRQUALITY "|" D_DOMOTICZ_P1_SMART_METER "|" D_DOMOTICZ_SHUTTER ;
 
 const char kDomoticzCommand[] PROGMEM = "switchlight|switchscene";
@@ -114,11 +122,12 @@ void MqttPublishDomoticzPowerState(uint8_t device) {
     if (device < 1) { device = 1; }
     if ((device > TasmotaGlobal.devices_present) || (device > MAX_DOMOTICZ_IDX)) { return; }
     if (Settings->domoticz_relay_idx[device -1]) {
-#ifdef USE_SHUTTER
-      if (domoticz_is_shutter) {
-        // Shutter is updated by sensor update - power state should not be sent
-      } else {
-#endif  // USE_SHUTTER
+// Comment this to enable domoticz relays if shutter configured
+//#ifdef USE_SHUTTER
+//      if (domoticz_is_shutter) {
+//        // Shutter is updated by sensor update - power state should not be sent
+//      } else {
+//#endif  // USE_SHUTTER
 #ifdef USE_SONOFF_IFAN
       if (IsModuleIfan() && (device > 1)) {
         // Fan handled by MqttPublishDomoticzFanState
@@ -132,9 +141,9 @@ void MqttPublishDomoticzPowerState(uint8_t device) {
 #ifdef USE_SONOFF_IFAN
       }
 #endif // USE_SONOFF_IFAN
-#ifdef USE_SHUTTER
-      }
-#endif //USE_SHUTTER
+//#ifdef USE_SHUTTER
+//      }
+//#endif //USE_SHUTTER
     }
   }
 }
@@ -152,13 +161,14 @@ void DomoticzMqttUpdate(void) {
     if (domoticz_update_timer <= 0) {
       domoticz_update_timer = Settings->domoticz_update_timer;
       for (uint32_t i = 1; i <= TasmotaGlobal.devices_present; i++) {
-#ifdef USE_SHUTTER
-        if (domoticz_is_shutter)
-        {
-            // no power state updates for shutters
-            break;
-        }
-#endif // USE_SHUTTER
+// Comment this to enable domoticz relays if shutter configured
+//#ifdef USE_SHUTTER
+//        if (domoticz_is_shutter)
+//        {
+//            // no power state updates for shutters
+//            break;
+//       }
+//#endif // USE_SHUTTER
 #ifdef USE_SONOFF_IFAN
         if (IsModuleIfan() && (i > 1)) {
           MqttPublishDomoticzFanState();
