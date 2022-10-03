@@ -121,7 +121,8 @@ SetOption21 1 - всегда показывать напряжение
 
 #ifdef  MY_USE_SONOFF_DUAL_R2
 #define MODULE SONOFF_DUAL_R2
-// https://templates.blakadder.com/sonoff_dual_R2.html 
+// https://templates.blakadder.com/sonoff_dual_R2.html
+// https://tasmota.github.io/docs/devices/Sonoff-Dual-R2/
 // Relay1..2 GPIO 12 (D6)- 1  GPIO 5(D1)
 // DS18D20 - GPIO 2(D4)
 // CT -Analog
