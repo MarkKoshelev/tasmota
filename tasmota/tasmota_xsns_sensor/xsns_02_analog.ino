@@ -18,6 +18,10 @@
 */
 
 #ifdef USE_ADC
+#ifdef ESP32
+// use native ESP32 library to reduce analog noise
+  #include "driver/adc.h"
+#endif
 /*********************************************************************************************\
  * ADC support for ESP8266 GPIO17 (=PIN_A0) and ESP32 up to 8 channels on GPIO32 to GPIO39
 \*********************************************************************************************/
@@ -33,7 +37,8 @@
 #undef ANALOG_RESOLUTION
 #define ANALOG_RESOLUTION             12               // 12 = 4095, 11 = 2047, 10 = 1023
 #undef ANALOG_RANGE
-#define ANALOG_RANGE                  4095             // 4095 = 12, 2047 = 11, 1023 = 10
+//#define ANALOG_RANGE                  4095             // 4095 = 12, 2047 = 11, 1023 = 10
+#define ANALOG_RANGE                  8191             // 4095 = 12, 2047 = 11, 1023 = 10
 #undef ANALOG_PERCENT
 #define ANALOG_PERCENT                ((ANALOG_RANGE + 50) / 100)  // approximation to 1% ADC range
 #endif  // ESP32
@@ -296,6 +301,9 @@ void AdcInit(void) {
 #if CONFIG_IDF_TARGET_ESP32
     analogSetWidth(ANALOG_RESOLUTION);  // Default 12 bits (0 - 4095)
 #endif  // CONFIG_IDF_TARGET_ESP32
+//ADC_UNIT_1
+    //adc1_config_width(ADC_WIDTH_BIT_13);
+    //adc_vref_to_gpio(ADC_UNIT_1, GPIO_NUM_40);
     analogSetAttenuation(ADC_11db);     // Default 11db
 #endif
     for (uint32_t idx = 0; idx < Adcs.present; idx++) {
@@ -454,13 +462,81 @@ void AdcGetCurrentPower(uint8_t idx, uint8_t factor) {
   // factor 3 = 8 samples
   // factor 4 = 16 samples
   // factor 5 = 32 samples
-  uint8_t samples = 1 << factor;
+  uint8_t  samples = 1 << factor;
   uint16_t analog = 0;
   uint16_t analog_min = ANALOG_RANGE;
   uint16_t analog_max = 0;
-
+  
+  //adc1_config_channel_atten(ADC1_CHANNEL_2, ADC_ATTEN_11db);
+  //adc1_get_raw(ADC1_CHANNEL_2);
+  //adc_vref_to_gpio(adc_unit_t adc_unit, gpio_num_t gpio);
+  #define SAMP 20
   if (0 == Adc[idx].param1) {
+    uint32_t s[SAMP];
+    uint32_t s_sum[SAMP];
+    uint32_t s_max = 0;
+    uint32_t s_min = 0xFFFFFFFF;
+    uint8_t  idx_max = 0;
+    uint8_t  idx_min;
+    //adc1_get_raw(ADC1_CHANNEL_2);
+
+#ifdef ESP32
+    unsigned long previous = micros();
+    for (uint32_t i = 0; i < SAMP; i++) {
+      uint32_t smpls = 0;
+      uint32_t to_time = (i+1) * 1000;
+      s[i] = 0;
+      do {
+        delayMicroseconds(100);
+        s[i] += adc1_get_raw((adc1_channel_t)(Adc[idx].pin-1)); //analogRead(Adc[idx].pin); //adc1_get_raw(ADC1_CHANNEL_2);
+        smpls++;
+      } while((micros() - previous ) < to_time);
+      s[i] = s[i] / smpls;
+    }
+#else
+      for (uint32_t i = 0; i < SAMP; i++) {
+        delay(1);
+        s[i] = analogRead(Adc[idx].pin); //adc1_get_raw(ADC1_CHANNEL_2); //analogRead(Adc[idx].pin);
+      }
+#endif
+    // получем суммы значений до полупериода (усредение шумов) 
+    for (uint8_t i = 0; i < SAMP; i++) {
+      uint32_t ss = 0;
+      for(uint8_t j = 0; j < 10; j++) { // устредняем полупериодами
+        uint8_t idx = i + j;
+        if(idx >= SAMP) {
+          idx -= SAMP; // calculate from start
+        }
+        ss += s[idx];   
+      }
+      s_sum[i] = ss; 
+    }
+
+    //проводим спектральное выделение с разницей в период
+    for (uint8_t i = 0; i < SAMP/2; i++) {
+      uint32_t s_abs = abs(((int)s_sum[i] - (int)s_sum[i + (SAMP/2)]));
+      if(s_abs > s_max){
+        s_max = s_abs;
+        idx_max = i; // индес выборки с максималным занчением
+      }
+      if(s_abs < s_min){
+        s_min = s_abs;
+      }
+    }
+#if 0
+    //находим потенциально минимальное значение (уровень шумаов АЦП)
+    idx_min = idx_max + (SAMP/4); 
+    if(idx_min >= SAMP/2){
+      idx_min = idx_min - (SAMP/2);
+    }
+    s_max = abs(((int)s_sum[idx_min] - (int)s_sum[idx_min + (SAMP/2)]));
+#endif
+    float current = (float)((s_max - s_min) * Adc[idx].param2)/1000000;
+    Adc[idx].current = (3*Adc[idx].current + current) / 4;
+
+/*
     for (uint32_t i = 0; i < samples; i++) {
+//    for (uint32_t i = 0; i < 10; i++) {
       analog = analogRead(Adc[idx].pin);
       if (analog < analog_min) {
         analog_min = analog;
@@ -470,7 +546,8 @@ void AdcGetCurrentPower(uint8_t idx, uint8_t factor) {
       }
       delay(1);
     }
-    Adc[idx].current = (float)(analog_max-analog_min) * ((float)(Adc[idx].param2) / 100000);
+     Adc[idx].current = (float)(analog_max-analog_min);// * ((float)(Adc[idx].param2) / 100000);
+*/
   }
   else {
     analog = AdcRead(Adc[idx].pin, 5);
@@ -540,7 +617,8 @@ void AdcShow(bool json) {
 
     switch (Adc[idx].type) {
       case ADC_INPUT: {
-        uint16_t analog = AdcRead(Adc[idx].pin, 5);
+        delay(50);
+        uint16_t analog = AdcRead(Adc[idx].pin, 0);
 
         if (json) {
           AdcShowContinuation(&jsonflg);
