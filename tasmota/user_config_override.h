@@ -1,7 +1,11 @@
 /*
+Отключение температуры CPU ESP32 SetSensor127 0
+
 Подключение счетчика модбас
 https://blog.sitefreeman.com/2020/04/03/%D1%82%D1%80%D0%B5%D1%85%D1%84%D0%B0%D0%B7%D0%BD%D1%8B%D0%B9-wi-fi-%D1%81%D1%87%D0%B5%D1%82%D1%87%D0%B8%D0%BA-dds6619-016-017-sinotimer-rs485-tx-rx-modbus-sonoff-basic-majordomo/
 
+tasmota dicovery
+https://github.com/joba-1/Tasmoticz.git
 
 50:0F:F5:C0:2A:C0	 192.168.1.40	 TENDA-REPEATER	
 04:95:E6:E0:5E:40	 192.168.1.41	 IoT-MM
@@ -37,7 +41,7 @@ SONOFF_BASIC, SONOFF_RF, SONOFF_SV, SONOFF_TH, SONOFF_DUAL, SONOFF_POW, SONOFF_4
   MAXMODULE
 */
 
-#define MY_USE_SONOFF_DUAL_R2        // used for heating water pipe temp sensors simple(CT) power managemet
+//#define MY_USE_SONOFF_DUAL_R2        // used for heating water pipe temp sensors simple(CT) power managemet
 
 //#define MY_USE_PID                   // used for 3way valve (water controller)
 
@@ -89,11 +93,10 @@ GPIO3   CSE7766 RX
 в такой конфигурации на кнопку реагирует с некоторым запоздание приблизительно 10 сек
 SetOption21 1 - всегда показывать напряжение
 */
+#undef MODULE
+//#define MY_USE_MIRTEK
 
 //#define MY_USE_MODBUS
-
-#undef MODULE
-
 #ifdef  MY_USE_MODBUS
 // GPIO1 as ModBR Tx and GPIO3 as ModBR Rx
 #define MODULE WEMOS
@@ -105,7 +108,7 @@ SetOption21 1 - всегда показывать напряжение
 
 
 #ifdef  MY_USE_POW_R2
-#define MODULE SONOFF_POW_R2
+//#define MODULE SONOFF_POW_R2
 #define MAX_DOMOTICZ_TEMPS 2
 #endif
 
@@ -120,7 +123,7 @@ SetOption21 1 - всегда показывать напряжение
 #endif
 
 #ifdef  MY_USE_SONOFF_DUAL_R2
-#define MODULE SONOFF_DUAL_R2
+//#define MODULE SONOFF_DUAL_R2
 // https://templates.blakadder.com/sonoff_dual_R2.html
 // https://tasmota.github.io/docs/devices/Sonoff-Dual-R2/
 // Relay1..2 GPIO 12 (D6)- 1  GPIO 5(D1)
@@ -129,17 +132,58 @@ SetOption21 1 - всегда показывать напряжение
 #define MAX_DOMOTICZ_TEMPS 2
 #endif
 
+//#define MY_SONOFF_4CH
+// ESP8266 (Wemos):
+// Key1..4 - button1..4 как у SONOFF_4CH, GPOI0 - 1, GPOI9 - 2, GPIO10 - 3, GPIO14 - 4
+// Relay1..4 GPIO12 (D6)- 1  GPIO5(D1) - 2 GPIO4(D2) - 3 GPIO15(D8) - 4
+// DS18D20 -GPIO 2(D4)
 
-#if 0
-//#define MAX_DOMOTICZ_RELAYS 8 // by default 4 (undefined), may be 4 or 8 !!! 
-//#define MAX_DOMOTICZ_TEMPS 1
-#define MAX_DOMOTICZ_TEMPS 2
-//#define MAX_DOMOTICZ_TEMPS 4
-//#define MAX_DOMOTICZ_TEMPS 8
+// ESP32S2:
+// AdcParam1 7,0,700,0.22 GPIO3 - фаза на котел
+// AdcParam2 7,0,700,0.22 GPIO5 - фаза на котел
+// AdcParam3 7,0,700,0.22 GPIO7 - фаза на котел
+// AdcParam4 7,0,450,0.22 GPIO1 - переливной и дренажный насос
+// AdcParam5 6,770,8191,0,500 GPIO2 - ADCRange - датчик давления от 0 до 5(500) атмосфер
+// Prwssue  GPIO3 
+// Relay1..4 GPIO9 - 1 GPIO35 - 2 GPIO33 - 3 GPIO12 - 4
+// DS18D20 - GPIO16
+// https://tasmota.github.io/docs/ADC/ Pressure "ADC Range" mode
+// use command AdcParamX to calibrate
+// The best devider 4.7/3 ком, -ref ~1,262v probably ADC_ATTEN_DB_11 150 mV ~ 2450 mV
 
-//#define MODULE SONOFF_TH
-//#define MODULE WEMOS
-#define MODULE SONOFF_4CH
+/* TODO processing ANALOG SENSOR
+MQT: tele/D3_H12KW/SENSOR =
+ {"Time":"2022-11-12T12:49:58",
+ "ANALOG":{
+  "CTEnergy1":{"Energy":0.000,"Power":3,"Voltage":220,"Current":0.015},
+  "CTEnergy2":{"Energy":0.000,"Power":2,"Voltage":220,"Current":0.008},
+  "CTEnergy3":{"Energy":0.000,"Power":2,"Voltage":220,"Current":0.007},
+  "A4":0
+  },
+  "DS18B20":  {"Id":"1DA15B1E64FF","Temperature":22.8},"TempUnit":"C"
+}
+
+Tasmota AD: tasmota::updateSensorDevices: message {
+'Time': '2022-11-12T13:26:18',
+'ANALOG': {
+	'CTEnergy1': {'Energy': 0.0, 'Power': 1, 'Voltage': 220, 'Current': 0.007}, 
+	'CTEnergy2': {'Energy': 0.0, 'Power': 2, 'Voltage': 220, 'Current': 0.01}, 
+	'CTEnergy3': {'Energy': 0.0, 'Power': 2, 'Voltage': 220, 'Current': 0.009},
+	'A4': 0
+}, 
+'DS18B20': {'Id': '1DA15B1E64FF', 'Temperature': 22.4}, 'TempUnit': 'C'}
+Tasmota AD: tasmota::getSensorDevices:
+ states [('DS18B20', 'Temperature', 22.4, {'Name': 'Temperatur', 'Unit': '°C', 'DomoType': 'Temperature', 'Sensor': 'DS18B20'})]
+*/
+
+#define MY_VL53L                     // enable: lib/lib_i2c
+#ifdef  MY_VL53L
+// https://tasmota.github.io/docs/VL53Lxx
+//#define USE_VL53L0X                  //  [I2cDriver31] Enable VL53L0x time of flight sensor (I2C address 0x29) (+4k code)
+#define USE_VL53L1X                    //  [I2cDriver54] Enable VL53L1X time of flight sensor (I2C address 0x29) using Pololu VL53L1X library (+2k9 code)
+//  #define VL53L1X_XSHUT_ADDRESS 0x78 //  VL53L1X base address when used with XSHUT control
+//  #define VL53L1X_DISTANCE_MODE Long    
+#define MODULE WEMOS
 #endif
 
 #undef  MQTT_NO_RETAIN
@@ -282,13 +326,22 @@ SetOption21 1 - всегда показывать напряжение
 #endif
 
 
+
 // -- SPI sensors ---------------------------------
 #undef USE_SPI                                  // Hardware SPI using GPIO12(MISO), GPIO13(MOSI) and GPIO14(CLK) in addition to two user selectable GPIOs(CS and DC)
 #undef USE_SERIAL_BRIDGE                        // Add support for software Serial Bridge (+0k8 code)
 
+#undef USE_AUTOCONF                             // Enable Esp32 autoconf feature, requires USE_BERRY and USE_WEBCLIENT_HTTPS (12KB Flash)
+#undef USE_BERRY                                // Enable Berry scripting language
+
+//#define OMIT_LETS_ENCRYPT_CERT
+//#define OMIT_AWS_CERT
+
+#undef USE_CSE7761                              // Add support for CSE7761 Energy monitor as used in Sonoff Dual R3
+
 // -- Power monitoring sensors --------------------
 #undef USE_ENERGY_SENSOR                        // Add support for Energy Monitors (+14k code)
-#undef USE_ENERGY_MARGIN_DETECTION              // Add support for Energy Margin detection (+1k6 code)
+  #undef USE_ENERGY_MARGIN_DETECTION              // Add support for Energy Margin detection (+1k6 code)
   #undef USE_ENERGY_POWER_LIMIT                 // Add additional support for Energy Power Limit detection (+1k2 code)
 #undef USE_ENERGY_DUMMY                         // Add support for dummy Energy monitor allowing user values (+0k7 code)
 #undef USE_HLW8012                              // Add support for HLW8012, BL0937 or HJL-01 Energy Monitor for Sonoff Pow and WolfBlitz
@@ -301,6 +354,11 @@ SetOption21 1 - всегда показывать напряжение
   #define USE_ENERGY_SENSOR                        // Add support for Energy Monitors (+14k code)
   #define USE_ENERGY_MARGIN_DETECTION              // Add support for Energy Margin detection (+1k6 code)
   #define USE_HLW8012                              // Add support for HLW8012, BL0937 or HJL-01 Energy Monitor for Sonoff Pow and WolfBlitz
+#endif
+
+#ifdef MY_USE_MIRTEK
+  #define USE_ENERGY_SENSOR                        // Add support for Energy Monitors (+14k code)
+  #define USE_MIRTEK
 #endif
 
 #undef USE_CSE7766                              // Add support for CSE7766 Energy Monitor for Sonoff S31 and Pow R2
@@ -340,6 +398,7 @@ SetOption21 1 - всегда показывать напряжение
 
 // -- Other sensors/drivers -----------------------
 #undef USE_RC_SWITCH                            // Add support for RF transceiver using library RcSwitch (+2k7 code, 460 iram)
+#undef USE_RF_SENSOR                            // Add support for RF sensor receiver (434MHz or 868MHz) (+0k8 code)
 
 #ifdef MY_USE_PID
 
@@ -348,10 +407,7 @@ SetOption21 1 - всегда показывать напряжение
 // https://connect.smartliving.ru/profile/2920/blog167.html
 #define MODULE SONOFF_4CH
 // https://tasmota.github.io/docs/devices/Sonoff-4CH-DIY/ 
-// Key1..4 - button1..4 как у SONOFF_4CH, GPOI0 - 1, GPOI9 - 2, GPIO10 - 3, GPIO14 - 4
-// Relay1..4 GPIO 12 (D6)- 1  GPIO 5(D1) - 2 GPIO 4(D2) - 3 GPIO 15(D8) - 4
-// DS18D20 -GPIO 2(D4)
-// backlog Interlock 1,2; Interlock 1; SetOption80 1
+//// backlog Interlock 1,2; Interlock 1; SetOption80 1
 // Exec Command
 // backlog ShutterOpenDuration1 120;ShutterCloseDuration1 120
 // for HomeAssistant set SetOption59 https://tasmota.github.io/docs/Home-Assistant/#lights
