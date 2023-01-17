@@ -83,6 +83,9 @@
 #define D_DEBUG "Debug"
 #define D_DEWPOINT "Point de rosée"
 #define D_DISABLED "Désactivé"
+#define D_MOVING_DISTANCE "Moving Distance"
+#define D_STATIC_DISTANCE "Static Distance"
+#define D_DETECT_DISTANCE "Detect Distance"
 #define D_DISTANCE "Distance"
 #define D_DNS_SERVER "Serveur DNS"
 #define D_DO "Oxygène dissout"
@@ -495,10 +498,12 @@
 #define D_ZIGBEE_GENERATE_KEY "création d'une clé réseau ZigBee aléatoire"
 #define D_ZIGBEE_UNKNOWN_DEVICE "Module inconnu"
 #define D_ZIGBEE_UNKNOWN_ATTRIBUTE "Attribut inconnu"
+#define D_ZIGBEE_UNKNOWN_ENDPOINT "Unknown endpoint"
 #define D_ZIGBEE_INVALID_PARAM "Paramètre invalide"
 #define D_ZIGBEE_MISSING_PARAM "Paramètres manquants"
 #define D_ZIGBEE_UNKNWON_ATTRIBUTE "Nom d'attribut inconnu (ignoré): %s"
 #define D_ZIGBEE_TOO_MANY_CLUSTERS "Pas plus d'un Id de Cluster par commande"
+#define D_ZIGBEE_CONFLICTING_ENDPOINTS "Conflicting destination endpoints"
 #define D_ZIGBEE_WRONG_DELIMITER "Mauvais délimiteur dans le contenu du message"
 #define D_ZIGBEE_UNRECOGNIZED_COMMAND "Commande ZigBee inconnue: %s"
 #define D_ZIGBEE_TOO_MANY_COMMANDS "Une seule commande autorisée (%d)"
@@ -508,6 +513,11 @@
 #define D_ZIGBEE_RESET_1_OR_2 "Réinitialiser 1 ou 2"
 #define D_ZIGBEE_EEPROM_FOUND_AT_ADDRESS "EEPROM ZBBridge trouvée à l'adresse"
 #define D_ZIGBEE_RANDOMIZING_ZBCONFIG "Randomisation des paramètres ZigBee, veuillez vérifier avec 'ZbConfig'"
+
+// xdrv_89_dali.ino
+#define D_SENSOR_DALI_RX                  "Dali RX"
+#define D_SENSOR_DALI_TX                  "Dali TX"
+#define D_CONFIGURE_DALI                  "Config DALI"
 
 // xsns_03_energy.ino
 #define D_ENERGY_TODAY "Énergie aujourd'hui"
@@ -563,6 +573,12 @@
 #define D_GX_AXIS "Gyro Axe-X"
 #define D_GY_AXIS "Gyro Axe-Y"
 #define D_GZ_AXIS "Gyro Axe-Z"
+
+// xsns_33_QMC5883L.ino
+#define D_MX "Induction X-Axis"
+#define D_MY "Induction Y-Axis"
+#define D_MZ "Induction Z-Axis"
+#define D_MAGNETICFLD "Magnetic Induction"
 
 // xsns_34_hx711.ino
 #define D_HX_CAL_REMOVE "Retirer la charge"
@@ -675,8 +691,12 @@
 #define D_SENSOR_SBR_TX        "SerBr TX"
 #define D_SENSOR_MBR_TX        "ModBr Tx"
 #define D_SENSOR_MBR_RX        "ModBr Rx"
+#define D_SENSOR_MBR_TX_ENA    "ModBr Tx Ena"
 #define D_SENSOR_SR04_TRIG     "SR04 Tri/TX"
 #define D_SENSOR_SR04_ECHO     "SR04 Ech/RX"
+#define D_SENSOR_NRG_MBS_TX    "NrgMbs Tx"
+#define D_SENSOR_NRG_MBS_RX    "NrgMbs Rx"
+#define D_SENSOR_NRG_MBS_TX_ENA  "NrgMbs Tx Ena"
 #define D_SENSOR_SDM72_TX      "SDM72 TX"
 #define D_SENSOR_SDM72_RX      "SDM72 RX"
 #define D_SENSOR_SDM120_TX     "SDMx20 TX"
@@ -687,6 +707,8 @@
 #define D_SENSOR_SDM630_RX     "SDM630 RX"
 #define D_SENSOR_WE517_TX      "WE517 TX"
 #define D_SENSOR_WE517_RX      "WE517 RX"
+#define D_SENSOR_LD2410_TX     "LD2410 Tx"
+#define D_SENSOR_LD2410_RX     "LD2410 Rx"
 #define D_GPIO_TM1621_CS       "TM1621 CS"
 #define D_GPIO_TM1621_WR       "TM1621 WR"
 #define D_GPIO_TM1621_RD       "TM1621 RD"
@@ -755,6 +777,8 @@
 #define D_SENSOR_HRE_DATA      "HRE DAT"
 #define D_SENSOR_ADE7880_IRQ   "ADE7880 IRQ"
 #define D_SENSOR_ADE7953_IRQ   "ADE7953 IRQ"
+#define D_SENSOR_ADE7953_RST   "ADE7953 RST"
+#define D_SENSOR_ADE7953_CS    "ADE7953 CS"
 #define D_SENSOR_BUZZER        "Buzzer"
 #define D_SENSOR_DISP_RESET    "Display Rst"
 #define D_SENSOR_ZIGBEE_TXD    "ZigBee TX"
@@ -783,6 +807,8 @@
 #define D_SENSOR_SM2135_DAT    "SM2135 DAT"
 #define D_SENSOR_SM2335_CLK    "SM2335 CLK"
 #define D_SENSOR_SM2335_DAT    "SM2335 DAT"
+#define D_SENSOR_BP1658CJ_CLK  "BP1658CJ Clk"
+#define D_SENSOR_BP1658CJ_DAT  "BP1658CJ Dat"
 #define D_SENSOR_BP5758D_CLK    "BP5758D Clk"
 #define D_SENSOR_BP5758D_DAT    "BP5758D Dat"
 #define D_SENSOR_DEEPSLEEP     "Hibernation"
@@ -881,9 +907,16 @@
 #define D_GPIO_SHIFT595_RCLK   "74x595 RCLK"
 #define D_GPIO_SHIFT595_OE     "74x595 OE"
 #define D_GPIO_SHIFT595_SER    "74x595 SER"
+#define D_GPIO_DINGTIAN_CLK    "Dingtian CLK"
+#define D_GPIO_DINGTIAN_SDI    "Dingtian SDI"
+#define D_GPIO_DINGTIAN_Q7     "Dingtian Q7"
+#define D_GPIO_DINGTIAN_PL     "Dingtian PL"
+#define D_GPIO_DINGTIAN_RCK    "Dingtian RCK"
 #define D_SENSOR_CM11_TX       "CM110x TX"
 #define D_SENSOR_CM11_RX       "CM110x RX"
 #define D_SENSOR_FLOWRATEMETER "Flowrate"
+#define D_SENSOR_ME007_TRIG    "ME007 Tri"
+#define D_SENSOR_ME007_RX      "ME007 Rx"
 
 // Units
 #define D_UNIT_AMPERE "A"
@@ -911,6 +944,7 @@
 #define D_UNIT_MICROMETER "µm"
 #define D_UNIT_MICROSECOND "µs"
 #define D_UNIT_MICROSIEMENS_PER_CM "µS/cm"
+#define D_UNIT_MICROTESLA "µT"
 #define D_UNIT_MILLIAMPERE "mA"
 #define D_UNIT_MILLILITERS "ml"
 #define D_UNIT_MILLIMETER "mm"
@@ -934,6 +968,7 @@
 #define D_UNIT_WATT_METER_QUADRAT "W/m²"
 #define D_UNIT_LITER_PER_MINUTE "l/min"
 #define D_UNIT_CUBICMETER_PER_HOUR "m³/h"
+#define D_UNIT_CUBIC_METER "m³"
 
 #define D_NEW_ADDRESS          "Positionner l'adresse à"
 #define D_OUT_OF_RANGE         "Hors limites"
@@ -1077,6 +1112,8 @@
 
 // xsns_96_flowratemeter.ino
 #define D_FLOWRATEMETER_NAME "Flowrate"
+#define D_FLOWRATEMETER_AMOUNT_TODAY "Amount Today"
+#define D_FLOWRATEMETER_DURATION_TODAY "Duration Today"
 
 // xsns_83_neopool.ino
 #define D_NEOPOOL_MACH_NONE               "NeoPool"           // Machine names

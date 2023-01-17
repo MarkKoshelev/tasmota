@@ -130,7 +130,7 @@ void Sdm72Every250ms(void)
 
 void Sdm72SnsInit(void)
 {
-  Sdm72Modbus = new TasmotaModbus(Pin(GPIO_SDM72_RX), Pin(GPIO_SDM72_TX));
+  Sdm72Modbus = new TasmotaModbus(Pin(GPIO_SDM72_RX), Pin(GPIO_SDM72_TX), Pin(GPIO_NRG_MBS_TX_ENA));
   uint8_t result = Sdm72Modbus->Begin(SDM72_SPEED);
   if (result) {
     if (2 == result) {
@@ -185,8 +185,8 @@ const char HTTP_ENERGY_SDM72[] PROGMEM =
 void Sdm72Show(bool json) {
   if (isnan(Sdm72.total_active)) { return; }
 
-  char value_chr[TOPSZ];
-  char value2_chr[TOPSZ];
+  char value_chr[GUISZ];
+  char value2_chr[GUISZ];
 
   if (json) {
      ResponseAppend_P(PSTR(",\"" D_JSON_EXPORT_POWER "\":%s,\"" D_JSON_IMPORT_POWER "\":%s"),
@@ -207,7 +207,7 @@ void Sdm72Show(bool json) {
  * Interface
 \*********************************************************************************************/
 
-bool Xnrg18(uint8_t function)
+bool Xnrg18(uint32_t function)
 {
   bool result = false;
 

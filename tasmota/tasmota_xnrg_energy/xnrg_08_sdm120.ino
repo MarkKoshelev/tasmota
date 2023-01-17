@@ -177,7 +177,7 @@ void SDM120Every250ms(void)
 
 void Sdm120SnsInit(void)
 {
-  Sdm120Modbus = new TasmotaModbus(Pin(GPIO_SDM120_RX), Pin(GPIO_SDM120_TX));
+  Sdm120Modbus = new TasmotaModbus(Pin(GPIO_SDM120_RX), Pin(GPIO_SDM120_TX), Pin(GPIO_NRG_MBS_TX_ENA));
   uint8_t result = Sdm120Modbus->Begin(SDM120_SPEED);
   if (result) {
     if (2 == result) { ClaimSerial(); }
@@ -237,10 +237,10 @@ void Sdm220Show(bool json) {
 void Sdm220Show(bool json) {
   if (isnan(Sdm120.import_active)) { return; }
 
-  char value_chr[TOPSZ];
-  char value2_chr[TOPSZ];
-  char value3_chr[TOPSZ];
-  char value4_chr[TOPSZ];
+  char value_chr[GUISZ];
+  char value2_chr[GUISZ];
+  char value3_chr[GUISZ];
+  char value4_chr[GUISZ];
 
   if (json) {
     ResponseAppend_P(PSTR(",\"" D_JSON_IMPORT_ACTIVE "\":%s,\"" D_JSON_IMPORT_REACTIVE "\":%s,\"" D_JSON_EXPORT_REACTIVE "\":%s,\"" D_JSON_PHASE_ANGLE "\":%s"),
@@ -261,7 +261,7 @@ void Sdm220Show(bool json) {
  * Interface
 \*********************************************************************************************/
 
-bool Xnrg08(uint8_t function)
+bool Xnrg08(uint32_t function)
 {
   bool result = false;
 

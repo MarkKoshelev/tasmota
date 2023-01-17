@@ -110,6 +110,8 @@
 #define D_JSON_IMPORT_REACTIVE "ImportReactive"
 #define D_JSON_INFRARED "Infrared"
 #define D_JSON_INVALID_FILE_TYPE "Invalid filetype or buffer"
+#define D_JSON_IP6_GLOBAL "IP6Global"
+#define D_JSON_IP6_LOCAL "IP6Local"
 #define D_JSON_UNKNOWN "Unknown"
 #define D_JSON_LIGHT "Light"
 #define D_JSON_LINK_COUNT "LinkCount"
@@ -187,6 +189,8 @@
 #define D_JSON_TEMPERATURE_UNIT "TempUnit"
 #define D_JSON_TIME "Time"
 #define D_JSON_TODAY "Today"
+#define D_JSON_TODAY_SUM_EXPORT "TodaySumExport"
+#define D_JSON_TODAY_SUM_IMPORT "TodaySumImport"
 #define D_JSON_TOTAL "Total"
 #define D_JSON_TOTAL_USAGE "TotalUsage"
 #define D_JSON_TOTAL_REACTIVE "TotalReactive"
@@ -230,7 +234,11 @@
 #define D_JSON_RESETTABLE_TOTAL_ACTIVE "ResetTotalActive"
 #define D_JSON_SIGNALSTRENGTH "SignalStrength"
 #define D_JSON_CHIPTEMPERATURE "ChipTemperature"
-
+#define D_JSON_RAW "Raw"
+#define D_JSON_MX "XaxisInduction"
+#define D_JSON_MY "YaxisInduction"
+#define D_JSON_MZ "ZaxisInduction"
+#define D_JSON_MAGNETICFLD "MagneticInduction"
 #define D_RSLT_ENERGY "ENERGY"
 #define D_RSLT_HASS_STATE "HASS_STATE"
 #define D_RSLT_INFO "INFO"
@@ -416,6 +424,7 @@
 #define D_CMND_SENSORRETAIN "SensorRetain"
 #define D_CMND_INFORETAIN "InfoRetain"
 #define D_CMND_STATERETAIN "StateRetain"
+#define D_CMND_STATUSRETAIN "StatusRetain"
 #define D_CMND_PUBLISH "Publish"
 #define D_CMND_FILEUPLOAD "FileUpload"
 #define D_CMND_FILEDOWNLOAD "FileDownload"
@@ -495,6 +504,9 @@
 #define D_CMND_PALETTE "Palette"
 #define D_CMND_PIXELS "Pixels"
 #define D_CMND_STEPPIXELS "StepPixels"
+#define D_CMND_ARTNET "ArtNet"
+#define D_CMND_ARTNET_CONFIG "ArtNetConfig"
+#define D_SO_ARTNET_AUTORUN "ArtNetAutorun"
 #define D_CMND_RGBWWTABLE "RGBWWTable"
 #define D_CMND_ROTATION "Rotation"
 #define D_CMND_SCHEME "Scheme"
@@ -565,6 +577,7 @@
 // Commands xdrv_08_serial_bridge.ino
 #define D_CMND_SSERIALSEND "SSerialSend"
 #define D_CMND_SBAUDRATE "SBaudrate"
+#define D_CMND_SSERIALBUFFER "SSerialBuffer"
 #define D_CMND_SSERIALCONFIG "SSerialConfig"
   #define D_JSON_SSERIALRECEIVED "SSerialReceived"
 
@@ -582,6 +595,7 @@
 #define D_CMND_TIMERS "Timers"
 #define D_CMND_LATITUDE "Latitude"
 #define D_CMND_LONGITUDE "Longitude"
+#define D_CMND_SUNRISE "Sunrise"
 
 // Commands xdrv_23_zigbee.ino
 #define D_PRFX_ZB "Zb"
@@ -615,9 +629,11 @@
   #define D_JSON_ZIGBEE_EZSP_SENT "ZbEZSPSent"
   #define D_JSON_ZIGBEE_EZSP_SENT_RAW "ZbEZSPSentRaw"
   #define D_JSON_ZIGBEEZCL_RECEIVED "ZbZCLReceived"
+  #define D_JSON_ZIGBEEGP_RECEIVED "ZbGPReceived"
   #define D_JSON_ZIGBEEZCL_RAW_RECEIVED "ZbZCLRawReceived"
   #define D_JSON_ZIGBEE_DEVICE "Device"
   #define D_JSON_ZIGBEE_NAME "Name"
+  #define D_JSON_ZIGBEE_NAMES "Names"
   #define D_JSON_ZIGBEE_CONFIRM "ZbConfirm"
 #define D_CMND_ZIGBEE_NAME "Name"
 #define D_CMND_ZIGBEE_MODELID "ModelId"
@@ -672,6 +688,10 @@
   #define D_JSON_ZIGBEE_SCAN "ZbScan"
 #define D_CMND_ZIGBEE_CIE "CIE"
 #define D_CMND_ZIGBEE_ENROLL "Enroll"
+#define D_CMND_ZIGBEE_LOAD "Load"
+#define D_CMND_ZIGBEE_LOADDUMP "LoadDump"
+#define D_CMND_ZIGBEE_UNLOAD "Unload"
+#define D_CMND_ZIGBEE_ATTRDUMP "AttrDump"
 
 // Commands xdrv_25_A4988_Stepper.ino
 #define D_CMND_MOTOR "MOTOR"
@@ -718,6 +738,7 @@
 #define D_CMND_SHUTTER_TILTCONFIG "TiltConfig"
 #define D_CMND_SHUTTER_SETTILT "Tilt"
 #define D_CMND_SHUTTER_TILTINCDEC "TiltChange"
+#define D_CMND_SHUTTER_MOTORSTOP "MotorStop"
 
 // Commands xdrv_32_hotplug.ino
 #define D_CMND_HOTPLUG "HotPlug"
@@ -740,8 +761,15 @@
 // Commands xdrv_60_shift595.ino - 74x595 family shift register driver
 #define D_CMND_SHIFT595_DEVICE_COUNT "Shift595DeviceCount"
 
+// Commands xdrv_89_dali.ino
+#define D_CMND_DALI_POWER                 "power"
+#define D_CMND_DALI_DIMMER                "dim"
+
 // Commands xsns_02_analog.ino
 #define D_CMND_ADCPARAM "AdcParam"
+
+// Commands xsns_05_ds18x20.ino
+#define D_CMND_DS_ALIAS "DS18Alias"
 
 // xsns_70_veml6075.ino
 #define D_JSON_UVA_INTENSITY "UvaIntensity"
@@ -781,6 +809,7 @@
 #define D_LOG_UPLOAD "UPL: "       // Upload
 #define D_LOG_UPNP "UPP: "         // UPnP
 #define D_LOG_WIFI "WIF: "         // Wifi
+#define D_LOG_ETH "ETH: "          // Ethernet
 #define D_LOG_ZIGBEE "ZIG: "       // Zigbee
 #define D_LOG_TCP "TCP: "          // TCP bridge
 #define D_LOG_BERRY "BRY: "        // Berry scripting language
@@ -866,6 +895,7 @@ const float kSpeedConversionFactor[] = {1,            // none
 const char HTTP_SNS_F_TEMP[]        PROGMEM = "{s}%s "  D_TEMPERATURE         "{m}%*_f " D_UNIT_DEGREE          "%c{e}";
 const char HTTP_SNS_F_VOLTAGE[]     PROGMEM = "{s}%s "  D_VOLTAGE             "{m}%*_f " D_UNIT_VOLT              "{e}";
 const char HTTP_SNS_F_CURRENT_MA[]  PROGMEM = "{s}%s "  D_CURRENT             "{m}%*_f " D_UNIT_MILLIAMPERE       "{e}";
+const char HTTP_SNS_F_DISTANCE_CM[] PROGMEM = "{s}%s "  D_DISTANCE            "{m}%1_f " D_UNIT_CENTIMETER        "{e}";
 const char HTTP_SNS_HUM[]           PROGMEM = "{s}%s "  D_HUMIDITY            "{m}%s " D_UNIT_PERCENT             "{e}";
 const char HTTP_SNS_DEW[]           PROGMEM = "{s}%s "  D_DEWPOINT            "{m}%s " D_UNIT_DEGREE            "%c{e}";
 const char HTTP_SNS_PRESSURE[]      PROGMEM = "{s}%s "  D_PRESSURE            "{m}%s "                          "%s{e}";
@@ -879,8 +909,6 @@ const char HTTP_SNS_GPM[]           PROGMEM = "{s}%s "  D_FLOW_RATE           "{
 const char HTTP_SNS_MOISTURE[]      PROGMEM = "{s}%s "  D_MOISTURE            "{m}%d " D_UNIT_PERCENT             "{e}";
 const char HTTP_SNS_RANGE_CHR[]     PROGMEM = "{s}%s "  D_RANGE               "{m}%s"                             "{e}";
 const char HTTP_SNS_RANGE[]         PROGMEM = "{s}%s "  D_RANGE               "{m}%d"                             "{e}";
-const char HTTP_SNS_DISTANCE[]      PROGMEM = "{s}%s "  D_DISTANCE            "{m}%d " D_UNIT_MILLIMETER          "{e}";
-const char HTTP_SNS_DISTANCE_CM[]   PROGMEM = "{s}%s "  D_DISTANCE            "{m}%s " D_UNIT_CENTIMETER          "{e}";
 const char HTTP_SNS_HALL_EFFECT[]   PROGMEM = "{s}%s "  D_HALL_EFFECT         "{m}%d"                             "{e}";
 const char HTTP_SNS_VOLTAGE[]       PROGMEM = "{s}"     D_VOLTAGE             "{m}%s " D_UNIT_VOLT                "{e}";
 const char HTTP_SNS_CURRENT[]       PROGMEM = "{s}"     D_CURRENT             "{m}%s " D_UNIT_AMPERE              "{e}";

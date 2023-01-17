@@ -651,7 +651,7 @@ void DomoticzSaveSettings(void) {
  * Interface
 \*********************************************************************************************/
 
-bool Xdrv07(uint8_t function) {
+bool Xdrv07(uint32_t function) {
   bool result = false;
 
   if (Settings->flag.mqtt_enabled) {  // SetOption3 - Enable MQTT

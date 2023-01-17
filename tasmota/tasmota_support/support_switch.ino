@@ -197,7 +197,7 @@ void SwitchInit(void) {
 
   Switch.present = 0;
   for (uint32_t i = 0; i < MAX_SWITCHES; i++) {
-    Switch.last_state[i] = 1;  // Init global to virtual switch state;
+    Switch.last_state[i] = NOT_PRESSED;  // Init global to virtual switch state;
     if (PinUsed(GPIO_SWT1, i)) {
       Switch.present++;
 #ifdef ESP8266
@@ -408,6 +408,9 @@ void SwitchHandler(uint32_t mode) {
         case PUSH_IGNORE:
           Switch.last_state[i] = button;                        // Update switch state before publishing
           MqttPublishSensor();
+          break;
+        case PUSH_IGNORE_INV:
+          MqttPublishSensor();                                  // Publishing before update
           break;
         }
         Switch.last_state[i] = button;

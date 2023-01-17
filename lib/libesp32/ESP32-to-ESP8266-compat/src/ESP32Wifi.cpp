@@ -37,12 +37,21 @@ int WiFiClass32::getPhyMode() {
   int phy_mode = 0;  // " BGNL"
   uint8_t protocol_bitmap;
   if (esp_wifi_get_protocol(WIFI_IF_STA, &protocol_bitmap) == ESP_OK) {
-    if (protocol_bitmap & 1) { phy_mode = 1; }  // 11b
-    if (protocol_bitmap & 2) { phy_mode = 2; }  // 11g
-    if (protocol_bitmap & 4) { phy_mode = 3; }  // 11n
+    if (protocol_bitmap & 1) { phy_mode = WIFI_PHY_MODE_11B; }  // 1 = 11b
+    if (protocol_bitmap & 2) { phy_mode = WIFI_PHY_MODE_11G; }  // 2 = 11bg
+    if (protocol_bitmap & 4) { phy_mode = WIFI_PHY_MODE_11N; }  // 3 = 11bgn
     if (protocol_bitmap & 8) { phy_mode = 4; }  // Low rate
   }
   return phy_mode;
+}
+
+bool WiFiClass32::setPhyMode(WiFiPhyMode_t mode) {
+  uint8_t protocol_bitmap = WIFI_PROTOCOL_11B;     // 1
+  switch (mode) {
+    case 3: protocol_bitmap |= WIFI_PROTOCOL_11N;  // 4
+    case 2: protocol_bitmap |= WIFI_PROTOCOL_11G;  // 2
+  }
+  return (ESP_OK == esp_wifi_set_protocol(WIFI_IF_STA, protocol_bitmap));
 }
 
 void WiFiClass32::wps_disable() {
@@ -80,6 +89,16 @@ void WiFiClass32::forceSleepWake() {
 bool WiFiClass32::getNetworkInfo(uint8_t i, String &ssid, uint8_t &encType, int32_t &rssi, uint8_t *&bssid, int32_t &channel, bool &hidden_scan) {
     hidden_scan = false;
     return WiFi.getNetworkInfo(i, ssid, encType, rssi, bssid, channel);
+}
+
+// from https://github.com/espressif/arduino-esp32/pull/7520
+static const int WIFI_WANT_IP6_BIT_ALT = BIT15;
+bool WiFiClass32::IPv6(bool state) {
+  if (state)
+    WiFiGenericClass::setStatusBits(WIFI_WANT_IP6_BIT_ALT);
+  else
+    WiFiGenericClass::clearStatusBits(WIFI_WANT_IP6_BIT_ALT);
+  return true;
 }
 
 void wifi_station_disconnect() {
