@@ -45,11 +45,62 @@ SONOFF_BASIC, SONOFF_RF, SONOFF_SV, SONOFF_TH, SONOFF_DUAL, SONOFF_POW, SONOFF_4
 
 //#define MY_USE_PID                   // used for 3way valve (water controller)
 
-//#define MY_USE_RELAY_SONOFF_TH       // used for any relays based on SONOFF_TH (DIN rail relays, Sonoff TH16 ets)
+//#define MY_USE_RELAY_SONOFF_TH        // used for any relays based on SONOFF_TH (DIN rail relays, Sonoff TH16 ets)
 
 //#define MY_USE_RELAY_SONOFF_GENERIC  // used for ESP-01 module with Relay (pin0) DS18B20 (pin2) https://templates.blakadder.com/ESP-01S-Relay-v4.html 
 
 //#define MY_USE_RELAY_SONOFF_BASIC    // used for basic module with DHT22 (Pin3) 
+
+//#define MY_VL53L                     // enable: lib/lib_i2c
+
+#define MY_SONOFF_4CH 
+// ESP8266 (Wemos):
+// Key1..4 - button1..4 как у SONOFF_4CH, GPOI0 - 1, GPOI9 - 2, GPIO10 - 3, GPIO14 - 4
+// Relay1..4 GPIO12 (D6)- 1  GPIO5(D1) - 2 GPIO4(D2) - 3 GPIO15(D8) - 4
+// Relay5..6 GPIO0 (D3)-Relay5 (D5)-Relay6 - bad idea use GPOI0 - high level in reset/reboot state
+// DS18D20 - GPIO 2(D4)
+
+// ESP32S2:
+// deactivate internal temperature sensor SetSensor127 0
+// GPIO15 - onboard led
+// AdcParam1 7,0,700,0.22 GPIO3 - фаза на котел
+// AdcParam2 7,0,700,0.22 GPIO5 - фаза на котел
+// AdcParam3 7,0,700,0.22 GPIO7 - фаза на котел
+// AdcParam4 7,0,450,0.22 GPIO1 - переливной и дренажный насос
+// AdcParam5 6,730,8191,0,500 GPIO2 - ADCRange - датчик давления от 0 до 5(500) атмосфер
+// Pressue  GPIO3 
+// Relay1..4 GPIO9 - 1 GPIO35 - 2 GPIO33 - 3 GPIO12 - 4 
+// Relay5..6 GPIO18 -5 GPIO11 - 6 *GPIO18 is the sme as GPIO0 of ESP8266 - high level in reset/reboot state 
+// DS18D20 - GPIO16
+// https://tasmota.github.io/docs/ADC/ Pressure "ADC Range" mode
+// use command AdcParamX to calibrate
+// The best devider 4.7/3 ком, -ref ~1,262v probably ADC_ATTEN_DB_11 150 mV ~ 2450 mV
+
+/* TODO processing ANALOG SENSOR
+MQT: tele/D3_H12KW/SENSOR =
+ {"Time":"2022-11-12T12:49:58",
+ "ANALOG":{
+  "CTEnergy1":{"Energy":0.000,"Power":3,"Voltage":220,"Current":0.015},
+  "CTEnergy2":{"Energy":0.000,"Power":2,"Voltage":220,"Current":0.008},
+  "CTEnergy3":{"Energy":0.000,"Power":2,"Voltage":220,"Current":0.007},
+  "A4":0
+  },
+  "DS18B20":  {"Id":"1DA15B1E64FF","Temperature":22.8},"TempUnit":"C"
+}
+
+Tasmota AD: tasmota::updateSensorDevices: message {
+'Time': '2022-11-12T13:26:18',
+'ANALOG': {
+	'CTEnergy1': {'Energy': 0.0, 'Power': 1, 'Voltage': 220, 'Current': 0.007}, 
+	'CTEnergy2': {'Energy': 0.0, 'Power': 2, 'Voltage': 220, 'Current': 0.01}, 
+	'CTEnergy3': {'Energy': 0.0, 'Power': 2, 'Voltage': 220, 'Current': 0.009},
+	'A4': 0
+}, 
+'DS18B20': {'Id': '1DA15B1E64FF', 'Temperature': 22.4}, 'TempUnit': 'C'}
+Tasmota AD: tasmota::getSensorDevices:
+ states [('DS18B20', 'Temperature', 22.4, {'Name': 'Temperatur', 'Unit': '°C', 'DomoType': 'Temperature', 'Sensor': 'DS18B20'})]
+*/
+
 
 //#define MY_USE_GREE 
 // https://tasmota.github.io/docs/Tasmota-IR/
@@ -120,6 +171,7 @@ SetOption21 1 - всегда показывать напряжение
 #ifdef  MY_USE_RELAY_SONOFF_TH
 #define MODULE SONOFF_TH
 #define MAX_DOMOTICZ_TEMPS 2
+// GPIO12-Relay; GPIO14-DS18B20
 #endif
 
 #ifdef  MY_USE_SONOFF_DUAL_R2
@@ -132,51 +184,6 @@ SetOption21 1 - всегда показывать напряжение
 #define MAX_DOMOTICZ_TEMPS 2
 #endif
 
-//#define MY_SONOFF_4CH
-// ESP8266 (Wemos):
-// Key1..4 - button1..4 как у SONOFF_4CH, GPOI0 - 1, GPOI9 - 2, GPIO10 - 3, GPIO14 - 4
-// Relay1..4 GPIO12 (D6)- 1  GPIO5(D1) - 2 GPIO4(D2) - 3 GPIO15(D8) - 4
-// DS18D20 -GPIO 2(D4)
-
-// ESP32S2:
-// AdcParam1 7,0,700,0.22 GPIO3 - фаза на котел
-// AdcParam2 7,0,700,0.22 GPIO5 - фаза на котел
-// AdcParam3 7,0,700,0.22 GPIO7 - фаза на котел
-// AdcParam4 7,0,450,0.22 GPIO1 - переливной и дренажный насос
-// AdcParam5 6,770,8191,0,500 GPIO2 - ADCRange - датчик давления от 0 до 5(500) атмосфер
-// Prwssue  GPIO3 
-// Relay1..4 GPIO9 - 1 GPIO35 - 2 GPIO33 - 3 GPIO12 - 4
-// DS18D20 - GPIO16
-// https://tasmota.github.io/docs/ADC/ Pressure "ADC Range" mode
-// use command AdcParamX to calibrate
-// The best devider 4.7/3 ком, -ref ~1,262v probably ADC_ATTEN_DB_11 150 mV ~ 2450 mV
-
-/* TODO processing ANALOG SENSOR
-MQT: tele/D3_H12KW/SENSOR =
- {"Time":"2022-11-12T12:49:58",
- "ANALOG":{
-  "CTEnergy1":{"Energy":0.000,"Power":3,"Voltage":220,"Current":0.015},
-  "CTEnergy2":{"Energy":0.000,"Power":2,"Voltage":220,"Current":0.008},
-  "CTEnergy3":{"Energy":0.000,"Power":2,"Voltage":220,"Current":0.007},
-  "A4":0
-  },
-  "DS18B20":  {"Id":"1DA15B1E64FF","Temperature":22.8},"TempUnit":"C"
-}
-
-Tasmota AD: tasmota::updateSensorDevices: message {
-'Time': '2022-11-12T13:26:18',
-'ANALOG': {
-	'CTEnergy1': {'Energy': 0.0, 'Power': 1, 'Voltage': 220, 'Current': 0.007}, 
-	'CTEnergy2': {'Energy': 0.0, 'Power': 2, 'Voltage': 220, 'Current': 0.01}, 
-	'CTEnergy3': {'Energy': 0.0, 'Power': 2, 'Voltage': 220, 'Current': 0.009},
-	'A4': 0
-}, 
-'DS18B20': {'Id': '1DA15B1E64FF', 'Temperature': 22.4}, 'TempUnit': 'C'}
-Tasmota AD: tasmota::getSensorDevices:
- states [('DS18B20', 'Temperature', 22.4, {'Name': 'Temperatur', 'Unit': '°C', 'DomoType': 'Temperature', 'Sensor': 'DS18B20'})]
-*/
-
-#define MY_VL53L                     // enable: lib/lib_i2c
 #ifdef  MY_VL53L
 // https://tasmota.github.io/docs/VL53Lxx
 //#define USE_VL53L0X                  //  [I2cDriver31] Enable VL53L0x time of flight sensor (I2C address 0x29) (+4k code)
